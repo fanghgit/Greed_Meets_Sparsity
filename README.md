@@ -6,6 +6,9 @@ some important experiments result, note that some experiments may take
 quite a long time to run (more than 10 minutes) since we didn't fully
 optimize the code for practical purpose.
 
-If you have any questions regarding the code, you can contact
-`hgfang@cs.ubc.ca`.
+### Bibtex
+```
+
+```
+If you have any questions regarding the code, you can contact me by `hgfang@cs.ubc.ca`.
 
