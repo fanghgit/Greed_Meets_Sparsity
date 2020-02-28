@@ -49,15 +49,12 @@ class lasso_gcd():
         assert np.ndim(x) == 1
         assert np.ndim(g) == 1
         m = len(x)
-        x_new = x - g/self.L
-        for i in range(m):
-            if np.abs( x_new[i] ) <= self.lamb/self.L:
-                x_new[i] = 0
-            else:
-                x_new[i] = x_new[i] - np.sign(x_new[i])*self.lamb/self.L
-        d = x_new - x
-        # choose the largest, set Q = -Q
-        Q = -( 0.5*self.L*d**2 + g*d + self.lamb*np.abs( x_new ) - self.lamb*np.abs(x) )
+        idx0 = x == 0
+        idx1 = x != 0
+        Q = np.zeros( m )
+        Q[ idx1 ] = g[idx1] + self.lamb*np.sign( x[idx1] )
+        Q[ idx0 ] = (np.abs( g[idx0] ) > self.lamb)*( g[idx0] - self.lamb*np.sign( g[idx0] ) )
+        Q = np.abs( Q )
         assert np.ndim(Q) == 1
         if np.min(Q) < -1e-5:
             ii = np.argmin(Q)
@@ -65,6 +62,27 @@ class lasso_gcd():
             print("min Q: ", np.min(Q))
         assert np.min(Q) >= -1e-5
         return Q
+    
+#    def select_rule(self, x, g):
+#        assert np.ndim(x) == 1
+#        assert np.ndim(g) == 1
+#        m = len(x)
+#        x_new = x - g/self.L
+#        for i in range(m):
+#            if np.abs( x_new[i] ) <= self.lamb/self.L:
+#                x_new[i] = 0
+#            else:
+#                x_new[i] = x_new[i] - np.sign(x_new[i])*self.lamb/self.L
+#        d = x_new - x
+#        # choose the largest, set Q = -Q
+#        Q = -( 0.5*self.L*d**2 + g*d + self.lamb*np.abs( x_new ) - self.lamb*np.abs(x) )
+#        assert np.ndim(Q) == 1
+#        if np.min(Q) < -1e-5:
+#            ii = np.argmin(Q)
+#            print("x: ", x[ii], " x_new: ", x_new[ii], "g: ", g[ii])
+#            print("min Q: ", np.min(Q))
+#        assert np.min(Q) >= -1e-5
+#        return Q
     
     def get_delta(self, g_opt):
         return self.lamb - np.abs( g_opt )
